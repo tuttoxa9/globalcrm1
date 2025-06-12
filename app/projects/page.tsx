@@ -9,6 +9,7 @@ import CreateProjectModal from "@/components/create-project-modal"
 import { useAuth } from "@/hooks/useAuth"
 import { signOut } from "@/lib/auth"
 import { getProjects, type Project } from "@/lib/firestore"
+import { getUnicStatistics } from "@/lib/unic-firestore"
 import { useRouter } from "next/navigation"
 
 // Demo data for when user is not authenticated
@@ -79,6 +80,17 @@ const demoProjects = [
     userId: "demo",
     createdAt: new Date(),
   },
+  {
+    id: "unic-requests",
+    name: "Юник заявки",
+    color: "#3B82F6",
+    newRequests: 0, // Будет загружено из БД
+    totalRequests: 0,
+    accepted: 0,
+    rejected: 0,
+    userId: "demo",
+    createdAt: new Date(),
+  },
 ]
 
 export default function ProjectsPage() {
@@ -96,12 +108,33 @@ export default function ProjectsPage() {
     const loadProjects = async () => {
       try {
         setProjectsLoading(true)
+        let projectsToShow = demoProjects
+
         if (user) {
           const userProjects = await getProjects(user.uid)
-          setProjects(userProjects.length > 0 ? userProjects : demoProjects)
-        } else {
-          setProjects(demoProjects)
+          projectsToShow = userProjects.length > 0 ? userProjects : demoProjects
         }
+
+        // Загружаем реальные данные для проекта "Юник заявки"
+        try {
+          const unicStats = await getUnicStatistics()
+          projectsToShow = projectsToShow.map(project => {
+            if (project.id === "unic-requests" || project.name === "Юник заявки") {
+              return {
+                ...project,
+                newRequests: unicStats?.total?.new || 0,
+                totalRequests: unicStats?.total?.all || 0,
+                accepted: unicStats?.total?.accepted || 0,
+                rejected: unicStats?.total?.rejected || 0,
+              }
+            }
+            return project
+          })
+        } catch (unicError) {
+          console.error("Error loading Unic statistics:", unicError)
+        }
+
+        setProjects(projectsToShow)
       } catch (error) {
         console.error("Error loading projects:", error)
         setProjects(demoProjects)
@@ -126,10 +159,33 @@ export default function ProjectsPage() {
 
   const handleProjectCreated = async () => {
     // Перезагружаем проекты после создания нового
+    let projectsToShow = demoProjects
+
     if (user) {
       const userProjects = await getProjects(user.uid)
-      setProjects(userProjects)
+      projectsToShow = userProjects.length > 0 ? userProjects : demoProjects
     }
+
+    // Загружаем реальные данные для проекта "Юник заявки"
+    try {
+      const unicStats = await getUnicStatistics()
+      projectsToShow = projectsToShow.map(project => {
+        if (project.id === "unic-requests" || project.name === "Юник заявки") {
+          return {
+            ...project,
+            newRequests: unicStats?.total?.new || 0,
+            totalRequests: unicStats?.total?.all || 0,
+            accepted: unicStats?.total?.accepted || 0,
+            rejected: unicStats?.total?.rejected || 0,
+          }
+        }
+        return project
+      })
+    } catch (unicError) {
+      console.error("Error loading Unic statistics:", unicError)
+    }
+
+    setProjects(projectsToShow)
   }
 
   const handleProjectClick = (project: Project, element: HTMLElement) => {
