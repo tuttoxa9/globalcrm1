@@ -1,13 +1,15 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowLeft, Phone, Check, XCircle, RefreshCw, TrendingUp } from "lucide-react"
+import { ArrowLeft, Phone, Check, XCircle, RefreshCw, TrendingUp, Calculator } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import DateGroupedRequests from "@/components/date-grouped-requests"
 import UnansweredPanel from "@/components/unanswered-panel"
 import ProcessedRequestsPanel from "@/components/processed-requests-panel"
 import AdvancedStatsModal from "@/components/advanced-stats-modal"
+import EnhancedStatsModal from "@/components/enhanced-stats-modal"
+import CalculationPanel from "@/components/calculation-panel"
 import { useAuth } from "@/hooks/useAuth"
 import { getProjects, type Project } from "@/lib/firestore"
 import { getUnicRequests, getUnicStatistics, subscribeToUnicRequests, type UnicRequest } from "@/lib/unic-firestore"
@@ -26,6 +28,8 @@ export default function ProjectPage() {
   const [isPageLoaded, setIsPageLoaded] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isAdvancedStatsOpen, setIsAdvancedStatsOpen] = useState(false)
+  const [isEnhancedStatsOpen, setIsEnhancedStatsOpen] = useState(false)
+  const [isCalculationOpen, setIsCalculationOpen] = useState(false)
 
   // Load initial data
   useEffect(() => {
@@ -266,13 +270,22 @@ export default function ProjectPage() {
               </span>
             )}
           </motion.button>
+
+          <motion.button
+            onClick={() => setIsCalculationOpen(true)}
+            className="w-full flex items-center gap-3 rounded-lg bg-[#4A5568] px-4 py-3 text-[#E5E7EB] transition-all hover:bg-[#374151]"
+            whileTap={{ scale: 0.98 }}
+          >
+            <Calculator className="h-5 w-5" />
+            <span className="font-inter">Расчёт</span>
+          </motion.button>
         </div>
 
         {/* Compact Statistics at bottom */}
         {statistics && (
           <div className="p-6 border-t border-[#4A5568]">
             <motion.button
-              onClick={() => setIsAdvancedStatsOpen(true)}
+              onClick={() => setIsEnhancedStatsOpen(true)}
               className="w-full text-left"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -352,7 +365,7 @@ export default function ProjectPage() {
               </div>
 
               <motion.button
-                onClick={() => setIsAdvancedStatsOpen(true)}
+                onClick={() => setIsEnhancedStatsOpen(true)}
                 className="flex items-center gap-2 rounded-lg bg-[#4A5568] px-3 py-2 text-sm font-medium text-[#CBD5E0] transition-all hover:bg-[#374151]"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -476,6 +489,21 @@ export default function ProjectPage() {
         isOpen={isAdvancedStatsOpen}
         onClose={() => setIsAdvancedStatsOpen(false)}
         statistics={statistics}
+        requests={requests}
+      />
+
+      {/* Enhanced Stats Modal */}
+      <EnhancedStatsModal
+        isOpen={isEnhancedStatsOpen}
+        onClose={() => setIsEnhancedStatsOpen(false)}
+        statistics={statistics}
+        requests={requests}
+      />
+
+      {/* Calculation Panel */}
+      <CalculationPanel
+        isOpen={isCalculationOpen}
+        onClose={() => setIsCalculationOpen(false)}
         requests={requests}
       />
     </div>
