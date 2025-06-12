@@ -93,6 +93,34 @@ export default function UnicProjectStats({
     },
   ]
 
+  // Дополнительная статистика по источникам и устройствам
+  const additionalStats = [
+    {
+      label: "Mobile",
+      value: currentStats.mobile || 0,
+      color: "#10B981",
+      description: "Мобильные устройства"
+    },
+    {
+      label: "Desktop",
+      value: currentStats.desktop || 0,
+      color: "#6366F1",
+      description: "Настольные компьютеры"
+    },
+    {
+      label: "Яндекс",
+      value: currentStats.yandex || 0,
+      color: "#FF0000",
+      description: "Переходы с Яндекса"
+    },
+    {
+      label: "Google",
+      value: currentStats.google || 0,
+      color: "#4285F4",
+      description: "Переходы с Google"
+    }
+  ]
+
   const periodLabels = {
     all: "За всё время",
     today: "За сегодня",
@@ -183,14 +211,14 @@ export default function UnicProjectStats({
         )}
       </div>
 
-      {/* Карточки статистики */}
+      {/* Основные карточки статистики */}
       <div className="grid grid-cols-4 gap-4">
         {statItems.map((item, index) => (
           <motion.div
             key={item.label}
             className="group relative rounded-xl bg-gradient-to-br from-[#1F2937] to-[#111827] p-3 shadow-lg border border-[#374151]"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, filter: "blur(10px)" }}
+            animate={{ opacity: 1, filter: "blur(0px)" }}
             transition={{ delay: index * 0.05, duration: 0.3 }}
             whileHover={{ y: -2, scale: 1.02 }}
           >
@@ -203,8 +231,8 @@ export default function UnicProjectStats({
                 <motion.div
                   className="rounded-lg p-1.5"
                   style={{ backgroundColor: item.bgColor }}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   transition={{ delay: index * 0.05 + 0.2, duration: 0.2 }}
                 >
                   <item.icon className="h-3.5 w-3.5" style={{ color: item.color }} />
@@ -212,8 +240,8 @@ export default function UnicProjectStats({
 
                 <motion.p
                   className="text-xl font-bold text-[#E5E7EB] font-inter"
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   transition={{ delay: index * 0.05 + 0.3, duration: 0.2 }}
                 >
                   {item.value}
@@ -236,6 +264,40 @@ export default function UnicProjectStats({
             />
           </motion.div>
         ))}
+      </div>
+
+      {/* Дополнительная статистика */}
+      <div className="space-y-3">
+        <h4 className="text-lg font-semibold text-[#E5E7EB] font-inter flex items-center gap-2">
+          <BarChart3 className="h-5 w-5 text-[#6366F1]" />
+          Детальная аналитика
+        </h4>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {additionalStats.map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              className="bg-[#374151] rounded-lg p-3 border border-[#4A5568] hover:border-[#6B7280] transition-colors"
+              initial={{ opacity: 0, filter: "blur(10px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              transition={{ delay: (statItems.length * 0.05) + (index * 0.05), duration: 0.3 }}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: stat.color }}
+                />
+                <span className="text-lg font-bold text-[#E5E7EB] font-inter">
+                  {stat.value}
+                </span>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-[#E5E7EB] font-inter">{stat.label}</p>
+                <p className="text-xs text-[#9CA3AF] font-inter">{stat.description}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       {/* Date Range Picker */}

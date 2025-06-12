@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { ArrowLeft, Phone, Check, XCircle, RefreshCw } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
-import UnicRequestStack from "@/components/unic-request-stack"
+import DateGroupedRequests from "@/components/date-grouped-requests"
 import UnansweredPanel from "@/components/unanswered-panel"
 import ProcessedRequestsPanel from "@/components/processed-requests-panel"
 import UnicProjectStats from "@/components/unic-project-stats"
@@ -187,25 +187,20 @@ export default function ProjectPage() {
   }
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-[#2D3748]">
+    <div className="relative min-h-screen w-full overflow-hidden bg-[#2D3748] flex">
+      {/* Left Sidebar - Control Panel */}
       <motion.div
-        initial={{ opacity: 0, filter: "blur(20px)", scale: 1.02 }}
+        initial={{ opacity: 0, filter: "blur(20px)" }}
         animate={{
           opacity: isPageLoaded ? 1 : 0,
           filter: isPageLoaded ? "blur(0px)" : "blur(20px)",
-          scale: isPageLoaded ? 1 : 1.02,
         }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative z-10"
+        className="w-80 min-h-screen bg-[#1A202C] border-r border-[#4A5568] flex flex-col"
       >
-        {/* Header */}
-        <motion.header
-          className="flex items-center justify-between px-6 py-6 max-w-6xl mx-auto"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-        >
-          <div className="flex items-center gap-4">
+        {/* Header in Sidebar */}
+        <div className="p-6 border-b border-[#4A5568]">
+          <div className="flex items-center gap-4 mb-4">
             <button
               onClick={handleBack}
               className="flex items-center gap-2 text-[#CBD5E0] transition-colors hover:text-[#E5E7EB]"
@@ -218,63 +213,81 @@ export default function ProjectPage() {
               <div className="text-xs text-[#6B7280] font-inter">Реальные данные из Firebase</div>
             </div>
           </div>
+        </div>
 
-          <div className="flex items-center gap-4">
-            <motion.button
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className="flex items-center gap-2 rounded-lg bg-[#4A5568] px-3 py-2 text-[#E5E7EB] transition-all hover:bg-[#374151] disabled:opacity-50"
-              whileTap={{ scale: 0.98 }}
-            >
-              <RefreshCw className="h-4 w-4" />
-              <span className="font-inter text-sm">Обновить</span>
-            </motion.button>
+        {/* Control Buttons */}
+        <div className="p-6 space-y-4">
+          <motion.button
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="w-full flex items-center gap-3 rounded-lg bg-[#4A5568] px-4 py-3 text-[#E5E7EB] transition-all hover:bg-[#374151] disabled:opacity-50"
+            whileTap={{ scale: 0.98 }}
+          >
+            <RefreshCw className="h-5 w-5" />
+            <span className="font-inter">Обновить данные</span>
+          </motion.button>
 
-            <motion.button
-              onClick={() => handleOpenPanel("accepted")}
-              className="flex items-center gap-2 rounded-lg bg-[#4A5568] px-4 py-2 text-[#E5E7EB] transition-all hover:bg-[#374151]"
-              whileTap={{ scale: 0.98 }}
-            >
-              <Check className="h-4 w-4" />
-              <span className="font-inter">Принятые</span>
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#10B981] text-xs font-medium text-white">
-                {requests.filter((r) => r.status === "accepted").length}
+          <motion.button
+            onClick={() => handleOpenPanel("accepted")}
+            className="w-full flex items-center justify-between rounded-lg bg-[#4A5568] px-4 py-3 text-[#E5E7EB] transition-all hover:bg-[#374151]"
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="flex items-center gap-3">
+              <Check className="h-5 w-5" />
+              <span className="font-inter">Принятые заявки</span>
+            </div>
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#10B981] text-xs font-medium text-white">
+              {requests.filter((r) => r.status === "accepted").length}
+            </span>
+          </motion.button>
+
+          <motion.button
+            onClick={() => handleOpenPanel("rejected")}
+            className="w-full flex items-center justify-between rounded-lg bg-[#4A5568] px-4 py-3 text-[#E5E7EB] transition-all hover:bg-[#374151]"
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="flex items-center gap-3">
+              <XCircle className="h-5 w-5" />
+              <span className="font-inter">Отказанные заявки</span>
+            </div>
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#EF4444] text-xs font-medium text-white">
+              {requests.filter((r) => r.status === "rejected").length}
+            </span>
+          </motion.button>
+
+          <motion.button
+            onClick={() => handleOpenPanel("unanswered")}
+            className="w-full flex items-center justify-between rounded-lg bg-[#4A5568] px-4 py-3 text-[#E5E7EB] transition-all hover:bg-[#374151]"
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="flex items-center gap-3">
+              <Phone className="h-5 w-5" />
+              <span className="font-inter">Пропущенные звонки</span>
+            </div>
+            {unansweredRequests.length > 0 && (
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#F59E0B] text-xs font-medium text-white">
+                {unansweredRequests.length}
               </span>
-            </motion.button>
+            )}
+          </motion.button>
+        </div>
+      </motion.div>
 
-            <motion.button
-              onClick={() => handleOpenPanel("rejected")}
-              className="flex items-center gap-2 rounded-lg bg-[#4A5568] px-4 py-2 text-[#E5E7EB] transition-all hover:bg-[#374151]"
-              whileTap={{ scale: 0.98 }}
-            >
-              <XCircle className="h-4 w-4" />
-              <span className="font-inter">Отказанные</span>
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#EF4444] text-xs font-medium text-white">
-                {requests.filter((r) => r.status === "rejected").length}
-              </span>
-            </motion.button>
-
-            <motion.button
-              onClick={() => handleOpenPanel("unanswered")}
-              className="relative flex items-center gap-2 rounded-lg bg-[#4A5568] px-4 py-2 text-[#E5E7EB] transition-all hover:bg-[#374151]"
-              whileTap={{ scale: 0.98 }}
-            >
-              <Phone className="h-4 w-4" />
-              <span className="font-inter">Не ответили</span>
-              {unansweredRequests.length > 0 && (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#F59E0B] text-xs font-medium text-white">
-                  {unansweredRequests.length}
-                </span>
-              )}
-            </motion.button>
-          </div>
-        </motion.header>
-
+      {/* Main Content Area */}
+      <motion.div
+        initial={{ opacity: 0, filter: "blur(20px)" }}
+        animate={{
+          opacity: isPageLoaded ? 1 : 0,
+          filter: isPageLoaded ? "blur(0px)" : "blur(20px)",
+        }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="flex-1 relative z-10"
+      >
         {/* Project Stats */}
         <motion.div
-          className="mb-8 px-6 max-w-6xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          className="p-6"
+          initial={{ opacity: 0, filter: "blur(10px)" }}
+          animate={{ opacity: 1, filter: "blur(0px)" }}
           transition={{ duration: 0.4, delay: 0.15 }}
         >
           <UnicProjectStats
@@ -286,14 +299,14 @@ export default function ProjectPage() {
           />
         </motion.div>
 
-        {/* Request Stack */}
+        {/* Request Cards by Date */}
         <motion.div
-          className="flex justify-center px-6 pb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          className="px-6 pb-8"
+          initial={{ opacity: 0, filter: "blur(10px)" }}
+          animate={{ opacity: 1, filter: "blur(0px)" }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <UnicRequestStack requests={requests} onRequestUpdate={handleRequestUpdate} />
+          <DateGroupedRequests requests={requests} onRequestUpdate={handleRequestUpdate} />
         </motion.div>
       </motion.div>
 
