@@ -28,7 +28,7 @@ interface UnicRequestStackProps {
 export default function UnicRequestStack({
   requests,
   onRequestUpdate,
-  cardDimensions = { width: 380, height: 480 }, // Увеличили размер карточки
+  cardDimensions = { width: 380, height: 320 }, // Сбалансированный размер карточки
 }: UnicRequestStackProps) {
   const [cards, setCards] = useState<UnicRequest[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -240,10 +240,11 @@ export default function UnicRequestStack({
 
               {/* Card Content - only fully visible for the top card */}
               <div
-                className={`flex h-full flex-col p-4 ${isTopCard ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+                className={`flex h-full flex-col justify-between p-3 ${isTopCard ? "opacity-100" : "opacity-0 pointer-events-none"}`}
               >
-                {/* Header with status indicator */}
-                <div className="mb-3 flex items-center justify-between">
+                <div className="space-y-2">
+                  {/* Header with status indicator */}
+                  <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-[#3B82F6]" />
                     <span className="text-xs font-medium text-[#3B82F6] uppercase tracking-wide">Новая заявка</span>
@@ -252,14 +253,14 @@ export default function UnicRequestStack({
                 </div>
 
                 {/* Full Name */}
-                <div className="mb-3">
+                <div className="mb-2">
                   <h3 className="text-lg font-semibold text-[#F7FAFC] font-inter leading-tight">
                     {safeString(request.fullName)}
                   </h3>
                 </div>
 
                 {/* Contact Info */}
-                <div className="mb-3 space-y-2">
+                <div className="mb-2 space-y-1.5">
                   <div className="flex items-center gap-2 text-sm text-[#CBD5E0]">
                     <Phone className="h-3 w-3 flex-shrink-0 text-[#10B981]" />
                     <span className="font-inter font-medium">{safeString(request.phone)}</span>
@@ -274,14 +275,14 @@ export default function UnicRequestStack({
                 </div>
 
                 {/* Date and Time */}
-                <div className="mb-3 flex items-center gap-2 text-sm text-[#CBD5E0]">
+                <div className="mb-2 flex items-center gap-2 text-sm text-[#CBD5E0]">
                   <Calendar className="h-3 w-3 flex-shrink-0 text-[#6366F1]" />
                   <span className="font-inter">{formatDate(request.createdAt)}</span>
                 </div>
 
                 {/* Source Information */}
                 {request.source && request.source !== "hero_form" && (
-                  <div className="mb-3">
+                  <div className="mb-2">
                     <div className="rounded-lg bg-[#374151] p-2">
                       <div className="text-xs text-[#9CA3AF] mb-1">Источник заявки:</div>
                       <div className="text-sm text-[#E5E7EB] font-medium">{getSourceDisplayName(request.source)}</div>
@@ -291,7 +292,7 @@ export default function UnicRequestStack({
 
                 {/* Referrer */}
                 {request.referrer && (
-                  <div className="mb-3">
+                  <div className="mb-2">
                     <div className="flex items-center gap-2 text-sm text-[#CBD5E0]">
                       <ExternalLink className="h-3 w-3 flex-shrink-0 text-[#8B5CF6]" />
                       <span className="font-inter text-xs">Переход с: {getDomainFromUrl(request.referrer)}</span>
@@ -301,8 +302,8 @@ export default function UnicRequestStack({
 
                 {/* Device and Browser Info */}
                 {request.userAgent && (
-                  <div className="mb-4 flex-1">
-                    <div className="rounded-lg bg-[#374151] p-3">
+                  <div className="mb-2">
+                    <div className="rounded-lg bg-[#374151] p-2">
                       <div className="flex items-center gap-2 mb-2">
                         <BrowserIcon className="h-4 w-4 text-[#3B82F6]" />
                         <span className="text-xs font-medium text-[#E5E7EB]">Устройство</span>
@@ -326,6 +327,7 @@ export default function UnicRequestStack({
                     </div>
                   </div>
                 )}
+                </div>
 
                 {/* Action Buttons */}
                 <div className="flex items-center justify-between pt-2 border-t border-[#374151]">

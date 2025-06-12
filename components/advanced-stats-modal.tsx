@@ -37,13 +37,14 @@ export default function AdvancedStatsModal({ isOpen, onClose, statistics }: Adva
           />
 
           {/* Modal */}
-          <motion.div
-            className="fixed left-1/2 top-1/2 z-50 h-[90vh] w-[95vw] max-w-6xl -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-[#1F2937] shadow-2xl"
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-          >
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              className="relative h-[90vh] w-full max-w-6xl rounded-2xl bg-[#1F2937] shadow-2xl"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-[#374151] p-6">
               <div className="flex items-center gap-3">
@@ -215,7 +216,8 @@ export default function AdvancedStatsModal({ isOpen, onClose, statistics }: Adva
                 </div>
               </div>
             </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>

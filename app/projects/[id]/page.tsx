@@ -157,10 +157,18 @@ export default function ProjectPage() {
     return (
       <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-[#2D3748]">
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-          className="h-8 w-8 rounded-full border-2 border-t-transparent border-[#3B82F6]"
-        />
+          initial={{ opacity: 0, filter: "blur(20px)" }}
+          animate={{ opacity: 1, filter: "blur(0px)" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="text-center"
+        >
+          <div className="text-lg font-light text-[#E5E7EB] font-montserrat">
+            MNG
+          </div>
+          <div className="mt-2 text-sm text-[#6B7280] font-inter">
+            Загрузка проекта...
+          </div>
+        </motion.div>
       </div>
     )
   }
@@ -218,7 +226,7 @@ export default function ProjectPage() {
               className="flex items-center gap-2 rounded-lg bg-[#4A5568] px-3 py-2 text-[#E5E7EB] transition-all hover:bg-[#374151] disabled:opacity-50"
               whileTap={{ scale: 0.98 }}
             >
-              <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+              <RefreshCw className="h-4 w-4" />
               <span className="font-inter text-sm">Обновить</span>
             </motion.button>
 

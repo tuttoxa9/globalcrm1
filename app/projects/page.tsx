@@ -155,12 +155,18 @@ export default function ProjectsPage() {
     return (
       <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-[#111827]">
         <BackgroundBlob seed={123} />
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="z-10">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-            className="h-8 w-8 rounded-full border-2 border-t-transparent border-[#2D3748]"
-          />
+        <motion.div
+          initial={{ opacity: 0, filter: "blur(20px)" }}
+          animate={{ opacity: 1, filter: "blur(0px)" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="z-10 text-center"
+        >
+          <div className="text-lg font-light text-[#E5E7EB] font-montserrat">
+            MNG
+          </div>
+          <div className="mt-2 text-sm text-[#6B7280] font-inter">
+            Загрузка проектов...
+          </div>
         </motion.div>
       </div>
     )
@@ -295,15 +301,18 @@ export default function ProjectsPage() {
           >
             <motion.div
               className="flex h-full w-full items-center justify-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.3 }}
+              initial={{ opacity: 0, filter: "blur(20px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              transition={{ delay: 0.2, duration: 0.4, ease: "easeOut" }}
             >
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 0.8, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-                className="h-8 w-8 rounded-full border-2 border-t-transparent border-white"
-              />
+              <div className="text-center">
+                <div className="text-lg font-light text-white font-montserrat">
+                  {selectedProject?.name}
+                </div>
+                <div className="mt-2 text-sm text-white/70 font-inter">
+                  Переход к проекту...
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         )}

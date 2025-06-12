@@ -26,16 +26,19 @@ export default function UnicProjectStats({
 
   if (!statistics) {
     return (
-      <div className="max-w-5xl mx-auto space-y-4">
-        <div className="animate-pulse">
-          <div className="h-8 bg-[#374151] rounded mb-4"></div>
-          <div className="grid grid-cols-4 gap-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-24 bg-[#374151] rounded"></div>
-            ))}
-          </div>
+      <motion.div
+        className="max-w-5xl mx-auto space-y-4"
+        initial={{ opacity: 0, filter: "blur(10px)" }}
+        animate={{ opacity: 1, filter: "blur(0px)" }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      >
+        <div className="h-8 bg-[#374151] rounded mb-4 opacity-50"></div>
+        <div className="grid grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-24 bg-[#374151] rounded opacity-50"></div>
+          ))}
         </div>
-      </div>
+      </motion.div>
     )
   }
 
@@ -185,7 +188,7 @@ export default function UnicProjectStats({
         {statItems.map((item, index) => (
           <motion.div
             key={item.label}
-            className="group relative rounded-xl bg-gradient-to-br from-[#1F2937] to-[#111827] p-4 shadow-lg border border-[#374151]"
+            className="group relative rounded-xl bg-gradient-to-br from-[#1F2937] to-[#111827] p-3 shadow-lg border border-[#374151]"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05, duration: 0.3 }}
@@ -194,21 +197,21 @@ export default function UnicProjectStats({
             {/* Цветная полоска сверху */}
             <div className="absolute left-0 top-0 h-1 w-full rounded-t-xl" style={{ backgroundColor: item.color }} />
 
-            <div className="space-y-3">
+            <div className="space-y-2">
               {/* Иконка и значение */}
               <div className="flex items-center justify-between">
                 <motion.div
-                  className="rounded-lg p-2"
+                  className="rounded-lg p-1.5"
                   style={{ backgroundColor: item.bgColor }}
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: index * 0.05 + 0.2, duration: 0.2 }}
                 >
-                  <item.icon className="h-4 w-4" style={{ color: item.color }} />
+                  <item.icon className="h-3.5 w-3.5" style={{ color: item.color }} />
                 </motion.div>
 
                 <motion.p
-                  className="text-2xl font-bold text-[#E5E7EB] font-inter"
+                  className="text-xl font-bold text-[#E5E7EB] font-inter"
                   initial={{ scale: 0.8 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: index * 0.05 + 0.3, duration: 0.2 }}
@@ -220,7 +223,7 @@ export default function UnicProjectStats({
               {/* Название и описание */}
               <div>
                 <p className="text-sm font-medium text-[#E5E7EB] font-inter">{item.label}</p>
-                <p className="text-sm text-[#9CA3AF] font-inter">{item.description}</p>
+                <p className="text-xs text-[#9CA3AF] font-inter">{item.description}</p>
               </div>
             </div>
 
