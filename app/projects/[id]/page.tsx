@@ -460,6 +460,7 @@ export default function ProjectPage() {
         onClose={() => setIsAcceptedOpen(false)}
         requests={requests}
         type="accepted"
+        onRequestUpdate={handleRequestUpdate}
       />
 
       <ProcessedRequestsPanel
@@ -467,6 +468,7 @@ export default function ProjectPage() {
         onClose={() => setIsRejectedOpen(false)}
         requests={requests}
         type="rejected"
+        onRequestUpdate={handleRequestUpdate}
       />
 
       {/* Advanced Stats Modal */}
@@ -474,6 +476,7 @@ export default function ProjectPage() {
         isOpen={isAdvancedStatsOpen}
         onClose={() => setIsAdvancedStatsOpen(false)}
         statistics={statistics}
+        requests={requests}
       />
     </div>
   )

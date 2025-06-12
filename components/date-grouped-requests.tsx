@@ -18,8 +18,9 @@ import {
   AppleIcon as Safari,
   ChevronDown,
   ChevronUp,
+  Trash2,
 } from "lucide-react"
-import { type UnicRequest, updateUnicRequestStatus } from "@/lib/unic-firestore"
+import { type UnicRequest, updateUnicRequestStatus, deleteUnicRequest } from "@/lib/unic-firestore"
 
 interface DateGroupedRequestsProps {
   requests: UnicRequest[]
@@ -75,6 +76,31 @@ export default function DateGroupedRequests({
       }
     } catch (error) {
       console.error("Error updating request status:", error)
+    } finally {
+      setIsUpdating(false)
+    }
+  }
+
+  const handleDeleteRequest = async (requestId: string) => {
+    if (isUpdating) return
+
+    // Подтверждение удаления
+    if (!confirm("Вы уверены, что хотите удалить эту заявку? Это действие нельзя отменить.")) {
+      return
+    }
+
+    setIsUpdating(true)
+    try {
+      const { error } = await deleteUnicRequest(requestId)
+      if (!error) {
+        onRequestUpdate()
+      } else {
+        console.error("Error deleting request:", error)
+        alert("Ошибка при удалении заявки")
+      }
+    } catch (error) {
+      console.error("Error deleting request:", error)
+      alert("Ошибка при удалении заявки")
     } finally {
       setIsUpdating(false)
     }
@@ -288,8 +314,18 @@ export default function DateGroupedRequests({
                                 Новая заявка
                               </span>
                             </div>
-                            <div className="text-xs text-[#9CA3AF] font-inter">
-                              ID: {request.id.slice(-6)}
+                            <div className="flex items-center gap-2">
+                              <div className="text-xs text-[#9CA3AF] font-inter">
+                                ID: {request.id.slice(-6)}
+                              </div>
+                              <button
+                                onClick={() => handleDeleteRequest(request.id)}
+                                disabled={isUpdating}
+                                className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#EF4444] text-white transition-all hover:bg-[#DC2626] disabled:opacity-50"
+                                title="Удалить заявку"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </button>
                             </div>
                           </div>
 

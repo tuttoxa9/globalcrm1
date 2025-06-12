@@ -17,8 +17,11 @@ import {
   Chrome,
   ChromeIcon as Firefox,
   AppleIcon as Safari,
+  RotateCcw,
+  Trash2,
 } from "lucide-react"
 import { useState } from "react"
+import { updateUnicRequestStatus, deleteUnicRequest } from "@/lib/unic-firestore"
 
 interface Request {
   id: string
@@ -43,10 +46,12 @@ interface ProcessedRequestsPanelProps {
   onClose: () => void
   requests: Request[]
   type: "accepted" | "rejected"
+  onRequestUpdate?: () => void
 }
 
-export default function ProcessedRequestsPanel({ isOpen, onClose, requests, type }: ProcessedRequestsPanelProps) {
+export default function ProcessedRequestsPanel({ isOpen, onClose, requests, type, onRequestUpdate }: ProcessedRequestsPanelProps) {
   const [searchQuery, setSearchQuery] = useState("")
+  const [isUpdating, setIsUpdating] = useState(false)
 
   const filteredRequests = requests
     .filter((r) => r.status === type)
@@ -57,6 +62,51 @@ export default function ProcessedRequestsPanel({ isOpen, onClose, requests, type
         (r.birthDate || "").includes(searchQuery),
     )
     .sort((a, b) => (b.updatedAt || b.createdAt).getTime() - (a.updatedAt || a.createdAt).getTime())
+
+  const handleReturnToNew = async (requestId: string) => {
+    if (isUpdating) return
+
+    setIsUpdating(true)
+    try {
+      const { error } = await updateUnicRequestStatus(requestId, "new")
+      if (!error) {
+        onRequestUpdate?.()
+      } else {
+        console.error("Error returning request to new:", error)
+        alert("Ошибка при возврате заявки")
+      }
+    } catch (error) {
+      console.error("Error returning request to new:", error)
+      alert("Ошибка при возврате заявки")
+    } finally {
+      setIsUpdating(false)
+    }
+  }
+
+  const handleDeleteRequest = async (requestId: string) => {
+    if (isUpdating) return
+
+    // Подтверждение удаления
+    if (!confirm("Вы уверены, что хотите удалить эту заявку? Это действие нельзя отменить.")) {
+      return
+    }
+
+    setIsUpdating(true)
+    try {
+      const { error } = await deleteUnicRequest(requestId)
+      if (!error) {
+        onRequestUpdate?.()
+      } else {
+        console.error("Error deleting request:", error)
+        alert("Ошибка при удалении заявки")
+      }
+    } catch (error) {
+      console.error("Error deleting request:", error)
+      alert("Ошибка при удалении заявки")
+    } finally {
+      setIsUpdating(false)
+    }
+  }
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("ru-RU", {
@@ -232,9 +282,27 @@ export default function ProcessedRequestsPanel({ isOpen, onClose, requests, type
                               <User className="h-4 w-4 text-[#3B82F6]" />
                               <span className="text-xs text-[#9CA3AF]">ID: {request.id.slice(-6)}</span>
                             </div>
-                            <span className="text-xs text-[#9CA3AF]">
-                              {formatDate(request.updatedAt || request.createdAt)}
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-[#9CA3AF]">
+                                {formatDate(request.updatedAt || request.createdAt)}
+                              </span>
+                              <button
+                                onClick={() => handleReturnToNew(request.id)}
+                                disabled={isUpdating}
+                                className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#3B82F6] text-white transition-all hover:bg-[#2563EB] disabled:opacity-50"
+                                title="Вернуть в новые"
+                              >
+                                <RotateCcw className="h-3 w-3" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteRequest(request.id)}
+                                disabled={isUpdating}
+                                className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#EF4444] text-white transition-all hover:bg-[#DC2626] disabled:opacity-50"
+                                title="Удалить заявку"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </button>
+                            </div>
                           </div>
 
                           {/* Full Name */}
