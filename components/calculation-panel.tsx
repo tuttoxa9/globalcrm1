@@ -64,34 +64,19 @@ export default function CalculationPanel({ isOpen, onClose, requests }: Calculat
       return
     }
 
-    const startDate = new Date(currentEntry.startDate)
-    const endDate = new Date(startDate)
-    endDate.setDate(startDate.getDate() + 7)
-
-    const newEntry: CalculationEntry = {
-      id: Date.now().toString(),
-      startDate: currentEntry.startDate,
-      amount: currentEntry.amount,
-      endDate: endDate.toISOString().split('T')[0],
-      remainingBalance: 0
-    }
-
     setCurrentEntry({
       ...currentEntry,
-      endDate: newEntry.endDate,
       isCalculating: true
     })
-
-    setCalculations(prev => [...prev, newEntry])
   }
 
   const handleCompleteCalculation = () => {
     if (!currentEntry.isCalculating) return
 
     const startDate = new Date(currentEntry.startDate)
-    const endDate = new Date(currentEntry.endDate)
+    const endDate = new Date() // Текущая дата - расчёт в любое время
 
-    // Фильтруем заявки по периоду расчета
+    // Фильтруем заявки от даты старта до текущего момента
     const periodRequests = requests.filter(request => {
       const requestDate = new Date(request.createdAt)
       return requestDate >= startDate && requestDate <= endDate
@@ -113,13 +98,16 @@ export default function CalculationPanel({ isOpen, onClose, requests }: Calculat
       conversionRate
     }
 
-    setCalculations(prev =>
-      prev.map(calc =>
-        calc.endDate === currentEntry.endDate && calc.startDate === currentEntry.startDate
-          ? { ...calc, remainingBalance: currentEntry.remainingBalance, results }
-          : calc
-      )
-    )
+    const newEntry: CalculationEntry = {
+      id: Date.now().toString(),
+      startDate: currentEntry.startDate,
+      amount: currentEntry.amount,
+      endDate: endDate.toISOString().split('T')[0],
+      remainingBalance: currentEntry.remainingBalance,
+      results
+    }
+
+    setCalculations(prev => [...prev, newEntry])
 
     // Сбрасываем текущую запись
     setCurrentEntry({
@@ -178,7 +166,7 @@ export default function CalculationPanel({ isOpen, onClose, requests }: Calculat
               Новый расчёт
             </CardTitle>
             <CardDescription className="text-[#9CA3AF]">
-              Создание нового периода для анализа
+              Запустите отслеживание и рассчитайте результаты в любое время
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -211,16 +199,16 @@ export default function CalculationPanel({ isOpen, onClose, requests }: Calculat
                 disabled={!currentEntry.startDate || currentEntry.amount <= 0}
                 className="w-full bg-[#3B82F6] hover:bg-[#2563EB] text-white"
               >
-                Начать период (7 дней)
+                Начать отслеживание
               </Button>
             ) : (
               <div className="space-y-4">
                 <div className="p-3 bg-[#374151] rounded-lg">
                   <p className="text-sm text-[#E5E7EB]">
-                    Период: {currentEntry.startDate} - {currentEntry.endDate}
+                    Отслеживание начато: {currentEntry.startDate}
                   </p>
                   <p className="text-xs text-[#9CA3AF]">
-                    Ожидается завершение периода для подсчета
+                    Можете нажать "Подсчёт" в любое время для расчёта результатов
                   </p>
                 </div>
 
