@@ -1,13 +1,13 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowLeft, Phone, Check, XCircle, RefreshCw } from "lucide-react"
+import { ArrowLeft, Phone, Check, XCircle, RefreshCw, TrendingUp } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import DateGroupedRequests from "@/components/date-grouped-requests"
 import UnansweredPanel from "@/components/unanswered-panel"
 import ProcessedRequestsPanel from "@/components/processed-requests-panel"
-import UnicProjectStats from "@/components/unic-project-stats"
+import AdvancedStatsModal from "@/components/advanced-stats-modal"
 import { useAuth } from "@/hooks/useAuth"
 import { getProjects, type Project } from "@/lib/firestore"
 import { getUnicRequests, getUnicStatistics, subscribeToUnicRequests, type UnicRequest } from "@/lib/unic-firestore"
@@ -24,9 +24,8 @@ export default function ProjectPage() {
   const [isAcceptedOpen, setIsAcceptedOpen] = useState(false)
   const [isRejectedOpen, setIsRejectedOpen] = useState(false)
   const [isPageLoaded, setIsPageLoaded] = useState(false)
-  const [period, setPeriod] = useState<"all" | "today" | "week" | "month" | "custom">("all")
-  const [customDateRange, setCustomDateRange] = useState<{ start: Date; end: Date } | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [isAdvancedStatsOpen, setIsAdvancedStatsOpen] = useState(false)
 
   // Load initial data
   useEffect(() => {
@@ -130,10 +129,6 @@ export default function ProjectPage() {
     router.push("/projects")
   }
 
-  const handleCustomDateRangeChange = (start: Date, end: Date) => {
-    setCustomDateRange({ start, end })
-  }
-
   // Закрываем все боковые панели при открытии новой
   const handleOpenPanel = (panel: "unanswered" | "accepted" | "rejected") => {
     setIsUnansweredOpen(panel === "unanswered")
@@ -206,17 +201,18 @@ export default function ProjectPage() {
               className="flex items-center gap-2 text-[#CBD5E0] transition-colors hover:text-[#E5E7EB]"
             >
               <ArrowLeft className="h-5 w-5" />
+              Назад к проектам
             </button>
-            <div>
-              <h1 className="text-xl font-light text-[#E5E7EB] font-montserrat">{project.name}</h1>
-              {user && <span className="text-sm text-[#A0AEC0]">({user.email})</span>}
-              <div className="text-xs text-[#6B7280] font-inter">Реальные данные из Firebase</div>
-            </div>
+          </div>
+          <div>
+            <h1 className="text-xl font-light text-[#E5E7EB] font-montserrat">{project.name}</h1>
+            {user && <span className="text-sm text-[#A0AEC0]">({user.email})</span>}
+            <div className="text-xs text-[#6B7280] font-inter">Реальные данные из Firebase</div>
           </div>
         </div>
 
         {/* Control Buttons */}
-        <div className="p-6 space-y-4">
+        <div className="p-6 space-y-4 flex-1">
           <motion.button
             onClick={handleRefresh}
             disabled={isRefreshing}
@@ -262,7 +258,7 @@ export default function ProjectPage() {
           >
             <div className="flex items-center gap-3">
               <Phone className="h-5 w-5" />
-              <span className="font-inter">Пропущенные звонки</span>
+              <span className="font-inter">Не ответили</span>
             </div>
             {unansweredRequests.length > 0 && (
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#F59E0B] text-xs font-medium text-white">
@@ -271,9 +267,48 @@ export default function ProjectPage() {
             )}
           </motion.button>
         </div>
+
+        {/* Compact Statistics at bottom */}
+        {statistics && (
+          <div className="p-6 border-t border-[#4A5568]">
+            <motion.button
+              onClick={() => setIsAdvancedStatsOpen(true)}
+              className="w-full text-left"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <TrendingUp className="h-5 w-5 text-[#3B82F6]" />
+                <h3 className="text-lg font-semibold text-[#E5E7EB] font-inter">Быстрая статистика</h3>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-[#374151] rounded-lg p-3">
+                  <div className="text-lg font-bold text-[#E5E7EB] font-inter">{statistics.total?.all || 0}</div>
+                  <div className="text-xs text-[#9CA3AF] font-inter">Всего</div>
+                </div>
+
+                <div className="bg-[#374151] rounded-lg p-3">
+                  <div className="text-lg font-bold text-[#E5E7EB] font-inter">{statistics.today?.count || 0}</div>
+                  <div className="text-xs text-[#9CA3AF] font-inter">Сегодня</div>
+                </div>
+
+                <div className="bg-[#374151] rounded-lg p-3">
+                  <div className="text-lg font-bold text-[#10B981] font-inter">{statistics.total?.accepted || 0}</div>
+                  <div className="text-xs text-[#9CA3AF] font-inter">Принято</div>
+                </div>
+
+                <div className="bg-[#374151] rounded-lg p-3">
+                  <div className="text-lg font-bold text-[#EF4444] font-inter">{statistics.total?.rejected || 0}</div>
+                  <div className="text-xs text-[#9CA3AF] font-inter">Отказано</div>
+                </div>
+              </div>
+            </motion.button>
+          </div>
+        )}
       </motion.div>
 
-      {/* Main Content Area */}
+      {/* Main Content Area - Only Date Grouped Requests */}
       <motion.div
         initial={{ opacity: 0, filter: "blur(20px)" }}
         animate={{
@@ -283,21 +318,121 @@ export default function ProjectPage() {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="flex-1 relative z-10"
       >
-        {/* Project Stats */}
-        <motion.div
-          className="p-6"
-          initial={{ opacity: 0, filter: "blur(10px)" }}
-          animate={{ opacity: 1, filter: "blur(0px)" }}
-          transition={{ duration: 0.4, delay: 0.15 }}
-        >
-          <UnicProjectStats
-            statistics={statistics}
-            period={period}
-            onPeriodChange={setPeriod}
-            customDateRange={customDateRange}
-            onCustomDateRangeChange={handleCustomDateRangeChange}
-          />
-        </motion.div>
+        {/* Header for main content */}
+        <div className="p-6 border-b border-[#4A5568]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="rounded-lg bg-[#3B82F6] p-2">
+                <TrendingUp className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-[#E5E7EB] font-inter">Статистика</h3>
+                <p className="text-sm text-[#9CA3AF] font-inter">За всё время</p>
+              </div>
+            </div>
+
+            {/* Period buttons */}
+            <div className="flex items-center gap-2">
+              <div className="flex gap-1">
+                {[
+                  { id: "all", label: "Всё" },
+                  { id: "today", label: "Сегодня" },
+                  { id: "week", label: "Неделя" },
+                  { id: "month", label: "Месяц" },
+                ].map((item) => (
+                  <motion.button
+                    key={item.id}
+                    className="rounded-lg px-3 py-2 text-sm font-medium transition-all bg-[#3B82F6] text-white shadow-md"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {item.label}
+                  </motion.button>
+                ))}
+              </div>
+
+              <motion.button
+                onClick={() => setIsAdvancedStatsOpen(true)}
+                className="flex items-center gap-2 rounded-lg bg-[#4A5568] px-3 py-2 text-sm font-medium text-[#CBD5E0] transition-all hover:bg-[#374151]"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Подробнее
+              </motion.button>
+            </div>
+          </div>
+        </div>
+
+        {/* Statistics Cards in main area */}
+        {statistics && (
+          <div className="p-6 border-b border-[#4A5568]">
+            <div className="grid grid-cols-4 gap-4">
+              <motion.div className="group relative rounded-xl bg-gradient-to-br from-[#1F2937] to-[#111827] p-4 shadow-lg border border-[#374151]">
+                <div className="absolute left-0 top-0 h-1 w-full rounded-t-xl bg-[#3B82F6]" />
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="rounded-lg p-1.5 bg-[#3B82F6]/10">
+                      <TrendingUp className="h-4 w-4 text-[#3B82F6]" />
+                    </div>
+                    <p className="text-2xl font-bold text-[#E5E7EB] font-inter">{statistics.total?.all || 0}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-[#E5E7EB] font-inter">Всего</p>
+                    <p className="text-xs text-[#9CA3AF] font-inter">{statistics.total?.all || 0} заявок</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div className="group relative rounded-xl bg-gradient-to-br from-[#1F2937] to-[#111827] p-4 shadow-lg border border-[#374151]">
+                <div className="absolute left-0 top-0 h-1 w-full rounded-t-xl bg-[#F59E0B]" />
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="rounded-lg p-1.5 bg-[#F59E0B]/10">
+                      <TrendingUp className="h-4 w-4 text-[#F59E0B]" />
+                    </div>
+                    <p className="text-2xl font-bold text-[#E5E7EB] font-inter">{statistics.total?.new || 0}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-[#E5E7EB] font-inter">Новые</p>
+                    <p className="text-xs text-[#9CA3AF] font-inter">93%</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div className="group relative rounded-xl bg-gradient-to-br from-[#1F2937] to-[#111827] p-4 shadow-lg border border-[#374151]">
+                <div className="absolute left-0 top-0 h-1 w-full rounded-t-xl bg-[#10B981]" />
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="rounded-lg p-1.5 bg-[#10B981]/10">
+                      <Check className="h-4 w-4 text-[#10B981]" />
+                    </div>
+                    <p className="text-2xl font-bold text-[#E5E7EB] font-inter">{statistics.total?.accepted || 0}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-[#E5E7EB] font-inter">Принято</p>
+                    <p className="text-xs text-[#9CA3AF] font-inter">7%</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div className="group relative rounded-xl bg-gradient-to-br from-[#1F2937] to-[#111827] p-4 shadow-lg border border-[#374151]">
+                <div className="absolute left-0 top-0 h-1 w-full rounded-t-xl bg-[#EF4444]" />
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="rounded-lg p-1.5 bg-[#EF4444]/10">
+                      <XCircle className="h-4 w-4 text-[#EF4444]" />
+                    </div>
+                    <p className="text-2xl font-bold text-[#E5E7EB] font-inter">{statistics.total?.rejected || 0}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-[#E5E7EB] font-inter">Отказано</p>
+                    <p className="text-xs text-[#9CA3AF] font-inter">0%</p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        )}
 
         {/* Request Cards by Date */}
         <motion.div
@@ -332,6 +467,13 @@ export default function ProjectPage() {
         onClose={() => setIsRejectedOpen(false)}
         requests={requests}
         type="rejected"
+      />
+
+      {/* Advanced Stats Modal */}
+      <AdvancedStatsModal
+        isOpen={isAdvancedStatsOpen}
+        onClose={() => setIsAdvancedStatsOpen(false)}
+        statistics={statistics}
       />
     </div>
   )
