@@ -1,50 +1,38 @@
-# GlobalCRM Enhancement Tasks
+# GlobalCRM1 Project - Color Changes
 
-## Задачи по улучшению CRM
+## Tasks to Complete:
 
-### 1. Анализ существующего кода ✓
-- [x] Клонировать репозиторий
-- [x] Изучить структуру проекта
-- [x] Просмотреть существующие компоненты статистики
-- [x] Понять архитектуру данных
+1. [x] Find the project selection screen that displays projects with number of requests
+2. [x] Locate the component showing request count numbers (currently black)
+3. [x] Change number color from black to white
+4. [x] Change progress bar/strip color to blue
+5. [x] Test changes and verify they work correctly
+6. [x] Create version of updated project
 
-### 2. Улучшение статистики в модальном окне ✓
-- [x] Добавить выбор дат и периодов
-- [x] Реализовать больше аналитики и процентов
-- [x] Добавить интерактивные графики
-- [x] Показать важную информацию с визуализацией
+## Notes:
+- User wants to modify the project selection screen
+- Numbers showing request counts should be white instead of black
+- Progress bars/strips should be blue instead of current color
 
-### 3. Новый блок "Расчёт" в меню ✓
-- [x] Создать компонент для блока расчётов
-- [x] Добавить поле ввода даты и суммы
-- [x] Реализовать кнопку "Подсчёт" с задержкой 7 дней
-- [x] Добавить поле для оставшегося рекламного баланса
-- [x] Реализовать расчёт стоимости заявки и принятого человека
+## Completed ✅
+All tasks have been successfully completed:
+- Found the project selection screen (/projects page)
+- Located the DonutChart component that displays the numbers and progress bars
+- Changed number colors from black to white using text-white class
+- Changed all progress bar segments to blue (#3B82F6)
+- Updated hover effects to use white and blue colors
+- Created version 1 with all changes
 
-### 4. Финализация ✓
-- [x] Тестирование всей функциональности
-- [x] Настройка Git и пуш изменений
-- [x] Проверка работоспособности
+## Additional Task Completed:
+7. [x] Change transition animation to show original project info (number in circle + name) instead of "Переход к проекту..."
 
-## Статус: Завершено ✅
+## New Fix Needed:
+8. [x] Make iOS-style seamless animation - the actual card should expand to full screen
+9. [x] Fix the circle progress bar filling calculation
 
-## Результат
-Успешно реализованы все требования:
-
-1. ✅ Проработана статистика в модальном окне с:
-   - Выбором дат и периодов (сегодня, вчера, неделя, месяц, квартал, год, кастомный)
-   - Расширенной аналитикой и процентами
-   - Интерактивными графиками и визуализациями
-   - Воронкой конверсии
-   - Аналитикой по устройствам, браузерам, источникам и времени
-
-2. ✅ Создан блок "Расчёт" в левом меню с:
-   - Полем ввода даты и суммы рекламы
-   - Гибким расчётом в любое время (не обязательно 7 дней)
-   - Кнопкой "Подсчёт" для расчёта от даты старта до текущего момента
-   - Полем для оставшегося рекламного баланса (0 по умолчанию)
-   - Расчётом стоимости одной заявки и принятого клиента
-   - Сохранением истории расчётов
-   - Показом конверсии и статистики
-
-3. ✅ Все изменения успешно загружены в Git репозиторий
+## Final Status: ALL COMPLETED ✅
+- Version 3 created with perfect iOS-style animation
+- Card seamlessly expands from its original position to full screen
+- Content scales naturally during transition
+- Progress circle properly calculated based on request ratios
+- Smooth and professional animation experience

@@ -331,11 +331,11 @@ export default function ProjectsPage() {
         )}
       </AnimatePresence>
 
-      {/* Expanding Card Animation */}
+      {/* iOS-style Card Expansion Animation */}
       <AnimatePresence>
         {selectedProject && isTransitioning && (
           <motion.div
-            className="fixed z-50 bg-[#2D3748]"
+            className="fixed z-50 bg-[#1F2937] flex items-center justify-center"
             initial={{
               left: cardPosition.x,
               top: cardPosition.y,
@@ -351,24 +351,61 @@ export default function ProjectsPage() {
               borderRadius: "0px",
             }}
             transition={{
-              duration: 0.5,
+              duration: 0.6,
               ease: [0.32, 0.72, 0, 1],
             }}
           >
+            {/* Scaled Project Card Content */}
             <motion.div
-              className="flex h-full w-full items-center justify-center"
-              initial={{ opacity: 0, filter: "blur(20px)" }}
-              animate={{ opacity: 1, filter: "blur(0px)" }}
-              transition={{ delay: 0.2, duration: 0.4, ease: "easeOut" }}
+              className="flex flex-col items-center justify-center"
+              initial={{ scale: 1 }}
+              animate={{ scale: 2.5 }}
+              transition={{
+                duration: 0.6,
+                ease: [0.32, 0.72, 0, 1],
+              }}
             >
-              <div className="text-center">
-                <div className="text-lg font-light text-white font-montserrat">
-                  {selectedProject?.name}
-                </div>
-                <div className="mt-2 text-sm text-white/70 font-inter">
-                  Переход к проекту...
+              {/* DonutChart - увеличенная версия */}
+              <div className="mb-4">
+                <div className="relative">
+                  <svg height={64} width={64} className="transform -rotate-90">
+                    {/* Background circle */}
+                    <circle
+                      stroke="#374151"
+                      fill="transparent"
+                      strokeWidth={6}
+                      r={26}
+                      cx={32}
+                      cy={32}
+                    />
+                    {/* Progress circle with proper calculation */}
+                    <motion.circle
+                      stroke="#3B82F6"
+                      fill="transparent"
+                      strokeWidth={6}
+                      strokeLinecap="round"
+                      r={26}
+                      cx={32}
+                      cy={32}
+                      initial={{ strokeDasharray: "0 163" }}
+                      animate={{
+                        strokeDasharray: `${((selectedProject?.newRequests || 0) / Math.max(selectedProject?.totalRequests || 1, 1)) * 163} 163`
+                      }}
+                      transition={{ duration: 1, delay: 0.2 }}
+                    />
+                  </svg>
+                  {/* Center number */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-lg font-bold font-inter text-white">
+                      {selectedProject?.newRequests || 0}
+                    </span>
+                  </div>
                 </div>
               </div>
+              {/* Project Name */}
+              <h3 className="text-center text-sm font-medium text-[#E5E7EB] font-inter">
+                {selectedProject?.name}
+              </h3>
             </motion.div>
           </motion.div>
         )}
