@@ -1,5 +1,5 @@
 "use client"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Calendar,
@@ -21,6 +21,10 @@ import {
   Trash2,
 } from "lucide-react"
 import { type UnicRequest, updateUnicRequestStatus, deleteUnicRequest } from "@/lib/unic-firestore"
+import { getCompanies, type Company } from "@/lib/companies-firestore"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface DateGroupedRequestsProps {
   requests: UnicRequest[]
@@ -33,6 +37,27 @@ export default function DateGroupedRequests({
 }: DateGroupedRequestsProps) {
   const [isUpdating, setIsUpdating] = useState(false)
   const [expandedDates, setExpandedDates] = useState<Set<string>>(new Set())
+  const [companies, setCompanies] = useState<Company[]>([])
+  const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false)
+  const [selectedRequestId, setSelectedRequestId] = useState<string>("")
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string>("")
+  const [companies, setCompanies] = useState<Company[]>([])
+  const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false)
+  const [selectedRequestId, setSelectedRequestId] = useState<string>("")
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string>("")
+
+  // Загружаем компании при монтировании
+  useEffect(() => {
+    const loadCompanies = async () => {
+      try {
+        const companiesData = await getCompanies()
+        setCompanies(companiesData)
+      } catch (error) {
+        console.error("Error loading companies:", error)
+      }
+    }
+    loadCompanies()
+  }, [])
 
   // Функция для безопасного получения значений
   const safeString = (value: any): string => {
@@ -66,11 +91,40 @@ export default function DateGroupedRequests({
   const handleStatusChange = async (requestId: string, newStatus: "accepted" | "rejected" | "no_answer") => {
     if (isUpdating) return
 
+    // Если статус "accepted", открываем модальное окно выбора компании
+    if (newStatus === "accepted") {
+      setSelectedRequestId(requestId)
+      setSelectedCompanyId("")
+      setIsCompanyModalOpen(true)
+      return
+    }
+
     setIsUpdating(true)
     try {
       const { error } = await updateUnicRequestStatus(requestId, newStatus)
       if (!error) {
         onRequestUpdate()
+      } else {
+        console.error("Error updating request status:", error)
+      }
+    } catch (error) {
+      console.error("Error updating request status:", error)
+    } finally {
+      setIsUpdating(false)
+    }
+  }
+
+  const handleAcceptWithCompany = async () => {
+    if (!selectedRequestId || !selectedCompanyId) return
+
+    setIsUpdating(true)
+    try {
+      const { error } = await updateUnicRequestStatus(selectedRequestId, "accepted", selectedCompanyId)
+      if (!error) {
+        onRequestUpdate()
+        setIsCompanyModalOpen(false)
+        setSelectedRequestId("")
+        setSelectedCompanyId("")
       } else {
         console.error("Error updating request status:", error)
       }
@@ -420,6 +474,58 @@ export default function DateGroupedRequests({
             </div>
         )
       })}
+
+      {/* Модальное окно выбора компании */}
+      <Dialog open={isCompanyModalOpen} onOpenChange={setIsCompanyModalOpen}>
+        <DialogContent className="bg-[#1F2937] border-[#374151] text-[#E5E7EB]">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold text-[#E5E7EB]">
+              Выберите компанию для курьера
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 pt-4">
+            <div>
+              <label className="text-sm font-medium text-[#E5E7EB] mb-2 block">
+                Компания
+              </label>
+              <Select value={selectedCompanyId} onValueChange={setSelectedCompanyId}>
+                <SelectTrigger className="bg-[#374151] border-[#4B5563] text-[#E5E7EB]">
+                  <SelectValue placeholder="Выберите компанию" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#1F2937] border-[#4B5563]">
+                  {companies.map((company) => (
+                    <SelectItem
+                      key={company.id}
+                      value={company.id}
+                      className="text-[#E5E7EB] focus:bg-[#374151]"
+                    >
+                      {company.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setIsCompanyModalOpen(false)}
+                className="flex-1 bg-transparent border-[#4B5563] text-[#9CA3AF] hover:bg-[#374151] hover:text-[#E5E7EB]"
+              >
+                Отмена
+              </Button>
+              <Button
+                onClick={handleAcceptWithCompany}
+                disabled={!selectedCompanyId || isUpdating}
+                className="flex-1 bg-[#10B981] text-white hover:bg-[#059669] disabled:opacity-50"
+              >
+                {isUpdating ? "Сохранение..." : "Принять в компанию"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
