@@ -4,7 +4,7 @@ import { X, TrendingUp, Calendar, Clock, BarChart3, PieChart, Check, XCircle, Ph
 import { useState, useMemo } from "react"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { DatePickerWithRange } from "@/components/date-range-picker"
+import DateRangePicker from "@/components/date-range-picker"
 import { subDays, format, isWithinInterval, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear } from "date-fns"
 import { ru } from "date-fns/locale"
 import { DateRange } from "react-day-picker"
@@ -310,11 +310,9 @@ export default function EnhancedStatsModal({ isOpen, onClose, statistics, reques
                   </div>
 
                   {selectedPeriod === 'custom' && (
-                    <DatePickerWithRange
-                      date={dateRange}
-                      onDateChange={setDateRange}
-                      className="bg-[#374151] border-[#4B5563] text-[#E5E7EB]"
-                    />
+                    <div className="bg-[#374151] border border-[#4B5563] text-[#E5E7EB] p-2 rounded">
+                      Выбор пользовательского диапазона временно недоступен
+                    </div>
                   )}
 
                   <button

@@ -41,10 +41,6 @@ export default function DateGroupedRequests({
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false)
   const [selectedRequestId, setSelectedRequestId] = useState<string>("")
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>("")
-  const [companies, setCompanies] = useState<Company[]>([])
-  const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false)
-  const [selectedRequestId, setSelectedRequestId] = useState<string>("")
-  const [selectedCompanyId, setSelectedCompanyId] = useState<string>("")
 
   // Загружаем компании при монтировании
   useEffect(() => {

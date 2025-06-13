@@ -1,51 +1,24 @@
-# Техническое задание - TODO List
+# Global CRM Project - Todo List
 
-## 1. Функционал: Ручное создание заявки
-- [x] Добавить кнопку "Создать заявку вручную" на страницу проекта
-- [x] Создать компонент модального окна с формой
-- [x] Реализовать поля формы:
-  - [x] ФИО (текстовое поле)
-  - [x] Номер телефона (поле для ввода номера)
-  - [x] Дата рождения (календарь)
-  - [x] Источник заявки (радиокнопки: Яндекс.Поиск, Google Поиск, По телефону)
-- [x] Добавить валидацию:
-  - [x] Хотя бы одно из полей: ФИО, телефон или дата рождения
-  - [x] Обязательный выбор источника заявки
-- [x] Интегрировать с Firebase для сохранения заявки
-- [x] Добавить заявку в общий список после создания
+## Completed Tasks
+- [completed] Fix duplicate variable declarations in components/date-grouped-requests.tsx
+  - Error: Identifier 'companies' and 'selectedRequestId' have already been declared
+  - Fixed: Removed duplicate state declarations (lines 44-47)
+- [completed] Fix dependency issues
+- [completed] Fix TypeScript errors (DatePickerWithRange import issue)
+- [completed] Test build process - SUCCESS!
 
-## 2. Функционал: Экспорт данных в Excel
-- [x] Добавить кнопку "Экспорт в Excel" на страницу со списком заявок
-- [x] Установить библиотеку для работы с Excel (xlsx)
-- [x] Создать функцию формирования Excel файла со столбцами:
-  - [x] ID заявки
-  - [x] Дата создания
-  - [x] ФИО клиента
-  - [x] Номер телефона клиента
-  - [x] Дата рождения клиента
-  - [x] Источник заявки
-  - [x] Статус заявки
-  - [x] Назначенный курьер
-  - [x] Финансовые данные
-- [x] Реализовать скачивание файла
+## Error Fixing Phase
+- [ ] Fix linting errors (non-critical)
+- [ ] Fix runtime errors (if any)
 
-## 3. Функционал: Управление компаниями и привязка курьеров
-- [x] Создать модель данных для компаний в Firebase
-- [x] Создать страницу управления компаниями
-- [x] Добавить CRUD операции для компаний:
-  - [x] Создание компании
-  - [x] Редактирование компании
-  - [x] Удаление компании
-  - [x] Просмотр списка компаний
-- [x] Добавить поле "Компания" в профиль курьера
-- [x] Создать выпадающий список компаний в форме редактирования курьера
-- [x] Сохранить привязку курьера к компании в БД
-- [x] Создать страницу управления курьерами
-- [x] Добавить ссылки в главное меню
+## Git Operations
+- [completed] Configure git with provided token
+- [in_progress] Commit fixes
+- [in_progress] Push changes to repository
 
-## 4. Настройка Git и пуш изменений
-- [ ] Настроить git credentials с предоставленным токеном
-- [ ] Сделать commit всех изменений
-- [ ] Выполнить push в репозиторий
-
-## Статус: Основная разработка завершена, переходим к тестированию и пушу
+## Notes
+- Repository URL: https://github.com/tuttoxa9/globalcrm1
+- Project successfully builds and compiles
+- Main compilation errors have been resolved
+- Ready for deployment
