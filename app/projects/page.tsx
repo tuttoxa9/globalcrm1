@@ -1,7 +1,7 @@
 "use client"
 
 import { motion, AnimatePresence } from "framer-motion"
-import { LogOut, Plus } from "lucide-react"
+import { LogOut, Plus, Building2, User } from "lucide-react"
 import { useState, useEffect } from "react"
 import BackgroundBlob from "@/components/background-blob"
 import ProjectCard from "@/components/project-card"
@@ -262,13 +262,29 @@ export default function ProjectsPage() {
               </div>
               <div className="flex items-center gap-4">
                 {user && (
-                  <button
-                    onClick={() => setIsCreateModalOpen(true)}
-                    className="flex items-center gap-2 text-[#6B7280] transition-colors hover:text-[#2D3748]"
-                  >
-                    <Plus className="h-4 w-4" />
-                    <span className="font-inter text-sm">Новый проект</span>
-                  </button>
+                  <>
+                    <button
+                      onClick={() => setIsCreateModalOpen(true)}
+                      className="flex items-center gap-2 text-[#6B7280] transition-colors hover:text-[#2D3748]"
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span className="font-inter text-sm">Новый проект</span>
+                    </button>
+                    <button
+                      onClick={() => router.push("/companies")}
+                      className="flex items-center gap-2 text-[#6B7280] transition-colors hover:text-[#2D3748]"
+                    >
+                      <Building2 className="h-4 w-4" />
+                      <span className="font-inter text-sm">Компании</span>
+                    </button>
+                    <button
+                      onClick={() => router.push("/couriers")}
+                      className="flex items-center gap-2 text-[#6B7280] transition-colors hover:text-[#2D3748]"
+                    >
+                      <User className="h-4 w-4" />
+                      <span className="font-inter text-sm">Курьеры</span>
+                    </button>
+                  </>
                 )}
                 <button
                   onClick={handleSignOut}

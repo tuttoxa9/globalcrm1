@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowLeft, Phone, Check, XCircle, RefreshCw, TrendingUp, Calculator } from "lucide-react"
+import { ArrowLeft, Phone, Check, XCircle, TrendingUp, Calculator, Plus } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import DateGroupedRequests from "@/components/date-grouped-requests"
@@ -10,6 +10,8 @@ import ProcessedRequestsPanel from "@/components/processed-requests-panel"
 import AdvancedStatsModal from "@/components/advanced-stats-modal"
 import EnhancedStatsModal from "@/components/enhanced-stats-modal"
 import CalculationPanel from "@/components/calculation-panel"
+import CreateManualRequestModal from "@/components/create-manual-request-modal"
+import ExportExcelButton from "@/components/export-excel-button"
 import { useAuth } from "@/hooks/useAuth"
 import { getProjects, type Project } from "@/lib/firestore"
 import { getUnicRequests, getUnicStatistics, subscribeToUnicRequests, type UnicRequest } from "@/lib/unic-firestore"
@@ -26,10 +28,11 @@ export default function ProjectPage() {
   const [isAcceptedOpen, setIsAcceptedOpen] = useState(false)
   const [isRejectedOpen, setIsRejectedOpen] = useState(false)
   const [isPageLoaded, setIsPageLoaded] = useState(false)
-  const [isRefreshing, setIsRefreshing] = useState(false)
+
   const [isAdvancedStatsOpen, setIsAdvancedStatsOpen] = useState(false)
   const [isEnhancedStatsOpen, setIsEnhancedStatsOpen] = useState(false)
   const [isCalculationOpen, setIsCalculationOpen] = useState(false)
+  const [isCreateRequestOpen, setIsCreateRequestOpen] = useState(false)
 
   // Load initial data
   useEffect(() => {
@@ -118,11 +121,7 @@ export default function ProjectPage() {
     }
   }
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true)
-    await loadUnicData()
-    setIsRefreshing(false)
-  }
+
 
   const handleRequestUpdate = () => {
     // Data will be updated automatically via subscription
@@ -217,6 +216,15 @@ export default function ProjectPage() {
 
         {/* Control Buttons */}
         <div className="p-6 space-y-4 flex-1">
+          <motion.button
+            onClick={() => setIsCreateRequestOpen(true)}
+            className="w-full flex items-center gap-3 rounded-lg bg-[#3B82F6] px-4 py-3 text-white transition-all hover:bg-[#2563EB]"
+            whileTap={{ scale: 0.98 }}
+          >
+            <Plus className="h-5 w-5" />
+            <span className="font-inter">Создать заявку вручную</span>
+          </motion.button>
+
           <motion.button
             onClick={() => setIsEnhancedStatsOpen(true)}
             className="w-full flex items-center gap-3 rounded-lg bg-[#4A5568] px-4 py-3 text-[#E5E7EB] transition-all hover:bg-[#374151]"
@@ -338,12 +346,14 @@ export default function ProjectPage() {
                 <TrendingUp className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-[#E5E7EB] font-inter">Статистика</h3>
-                <p className="text-sm text-[#9CA3AF] font-inter">За всё время</p>
+                <h3 className="text-xl font-semibold text-[#E5E7EB] font-inter">Заявки</h3>
+                <p className="text-sm text-[#9CA3AF] font-inter">Все заявки проекта</p>
               </div>
             </div>
 
-
+            <div className="flex items-center gap-3">
+              <ExportExcelButton requests={requests} />
+            </div>
           </div>
         </div>
 
@@ -407,6 +417,13 @@ export default function ProjectPage() {
         isOpen={isCalculationOpen}
         onClose={() => setIsCalculationOpen(false)}
         requests={requests}
+      />
+
+      {/* Create Manual Request Modal */}
+      <CreateManualRequestModal
+        isOpen={isCreateRequestOpen}
+        onClose={() => setIsCreateRequestOpen(false)}
+        onRequestCreated={handleRequestUpdate}
       />
     </div>
   )
