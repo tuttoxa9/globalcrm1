@@ -1,16 +1,13 @@
-# Todos
+# Todos for Animation Enhancement
 
-## Задачи по упрощению анимаций
+## Tasks
+- [completed] Add smooth expand/collapse animation for date groups
+- [completed] Add stagger animation for individual request cards
+- [completed] Test animations for smooth UX
+- [in_progress] Commit and push changes with provided token
 
-- [ ] **in_progress** Убрать излишние анимации для более лаконичного интерфейса
-  - Найти анимации вывода списка заявок
-  - Найти анимации выделения блоков
-  - Упростить или убрать "детские" анимации
-  - Сделать интерфейс более профессиональным
-
-- [ ] Сделать push изменений в GitHub
-
-## Места для поиска анимаций:
-- `/components/date-grouped-requests.tsx` - вывод списка заявок
-- `/components/request-card.tsx` - карточки заявок
-- `/app/projects/[id]/page.tsx` - анимации на странице проекта
+## Animation Requirements
+- Simple, minimalistic but beautiful animation
+- Smooth expand/collapse for date groups
+- Staggered reveal of request cards
+- Maintain existing functionality
