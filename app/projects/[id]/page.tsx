@@ -218,13 +218,12 @@ export default function ProjectPage() {
         {/* Control Buttons */}
         <div className="p-6 space-y-4 flex-1">
           <motion.button
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="w-full flex items-center gap-3 rounded-lg bg-[#4A5568] px-4 py-3 text-[#E5E7EB] transition-all hover:bg-[#374151] disabled:opacity-50"
+            onClick={() => setIsEnhancedStatsOpen(true)}
+            className="w-full flex items-center gap-3 rounded-lg bg-[#4A5568] px-4 py-3 text-[#E5E7EB] transition-all hover:bg-[#374151]"
             whileTap={{ scale: 0.98 }}
           >
-            <RefreshCw className="h-5 w-5" />
-            <span className="font-inter">Обновить данные</span>
+            <TrendingUp className="h-5 w-5" />
+            <span className="font-inter">Статистика</span>
           </motion.button>
 
           <motion.button
@@ -364,88 +363,12 @@ export default function ProjectPage() {
                 ))}
               </div>
 
-              <motion.button
-                onClick={() => setIsEnhancedStatsOpen(true)}
-                className="flex items-center gap-2 rounded-lg bg-[#4A5568] px-3 py-2 text-sm font-medium text-[#CBD5E0] transition-all hover:bg-[#374151]"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Подробнее
-              </motion.button>
+
             </div>
           </div>
         </div>
 
-        {/* Statistics Cards in main area */}
-        {statistics && (
-          <div className="p-6 border-b border-[#4A5568]">
-            <div className="grid grid-cols-4 gap-4">
-              <motion.div className="group relative rounded-xl bg-gradient-to-br from-[#1F2937] to-[#111827] p-4 shadow-lg border border-[#374151]">
-                <div className="absolute left-0 top-0 h-1 w-full rounded-t-xl bg-[#3B82F6]" />
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="rounded-lg p-1.5 bg-[#3B82F6]/10">
-                      <TrendingUp className="h-4 w-4 text-[#3B82F6]" />
-                    </div>
-                    <p className="text-2xl font-bold text-[#E5E7EB] font-inter">{statistics.total?.all || 0}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-[#E5E7EB] font-inter">Всего</p>
-                    <p className="text-xs text-[#9CA3AF] font-inter">{statistics.total?.all || 0} заявок</p>
-                  </div>
-                </div>
-              </motion.div>
 
-              <motion.div className="group relative rounded-xl bg-gradient-to-br from-[#1F2937] to-[#111827] p-4 shadow-lg border border-[#374151]">
-                <div className="absolute left-0 top-0 h-1 w-full rounded-t-xl bg-[#F59E0B]" />
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="rounded-lg p-1.5 bg-[#F59E0B]/10">
-                      <TrendingUp className="h-4 w-4 text-[#F59E0B]" />
-                    </div>
-                    <p className="text-2xl font-bold text-[#E5E7EB] font-inter">{statistics.total?.new || 0}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-[#E5E7EB] font-inter">Новые</p>
-                    <p className="text-xs text-[#9CA3AF] font-inter">93%</p>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div className="group relative rounded-xl bg-gradient-to-br from-[#1F2937] to-[#111827] p-4 shadow-lg border border-[#374151]">
-                <div className="absolute left-0 top-0 h-1 w-full rounded-t-xl bg-[#10B981]" />
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="rounded-lg p-1.5 bg-[#10B981]/10">
-                      <Check className="h-4 w-4 text-[#10B981]" />
-                    </div>
-                    <p className="text-2xl font-bold text-[#E5E7EB] font-inter">{statistics.total?.accepted || 0}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-[#E5E7EB] font-inter">Принято</p>
-                    <p className="text-xs text-[#9CA3AF] font-inter">7%</p>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div className="group relative rounded-xl bg-gradient-to-br from-[#1F2937] to-[#111827] p-4 shadow-lg border border-[#374151]">
-                <div className="absolute left-0 top-0 h-1 w-full rounded-t-xl bg-[#EF4444]" />
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="rounded-lg p-1.5 bg-[#EF4444]/10">
-                      <XCircle className="h-4 w-4 text-[#EF4444]" />
-                    </div>
-                    <p className="text-2xl font-bold text-[#E5E7EB] font-inter">{statistics.total?.rejected || 0}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-[#E5E7EB] font-inter">Отказано</p>
-                    <p className="text-xs text-[#9CA3AF] font-inter">0%</p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        )}
 
         {/* Request Cards by Date */}
         <motion.div

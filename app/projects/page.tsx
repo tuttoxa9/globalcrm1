@@ -201,10 +201,10 @@ export default function ProjectsPage() {
     setSelectedProject(project)
     setIsTransitioning(true)
 
-    // Переход на страницу проекта после анимации (уменьшено с 800ms до 500ms)
+    // Переход на страницу проекта после анимации (уменьшено до 300ms)
     setTimeout(() => {
       router.push(`/projects/${project.id}`)
-    }, 500)
+    }, 300)
   }
 
   if (loading || projectsLoading) {
@@ -351,7 +351,7 @@ export default function ProjectsPage() {
               borderRadius: "0px",
             }}
             transition={{
-              duration: 0.6,
+              duration: 0.4,
               ease: [0.32, 0.72, 0, 1],
             }}
           >
@@ -361,7 +361,7 @@ export default function ProjectsPage() {
               initial={{ scale: 1 }}
               animate={{ scale: 2.5 }}
               transition={{
-                duration: 0.6,
+                duration: 0.4,
                 ease: [0.32, 0.72, 0, 1],
               }}
             >

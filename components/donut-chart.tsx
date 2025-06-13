@@ -109,7 +109,7 @@ export default function DonutChart({ newRequests, accepted, rejected, color, isH
             r={normalizedRadius}
             cx={radius}
             cy={radius}
-            initial={{ strokeDasharray: `0 ${circumference}` }}
+            initial={{ strokeDasharray: rejectedStrokeDasharray }}
             animate={{
               strokeDasharray: isHovered
                 ? `${(rejectedPercentage / 100) * ((normalizedRadius + 2) * 2 * Math.PI)} ${(normalizedRadius + 2) * 2 * Math.PI}`
@@ -135,7 +135,7 @@ export default function DonutChart({ newRequests, accepted, rejected, color, isH
             r={normalizedRadius}
             cx={radius}
             cy={radius}
-            initial={{ strokeDasharray: `0 ${circumference}` }}
+            initial={{ strokeDasharray: acceptedStrokeDasharray }}
             animate={{
               strokeDasharray: isHovered
                 ? `${(acceptedPercentage / 100) * ((normalizedRadius + 2) * 2 * Math.PI)} ${(normalizedRadius + 2) * 2 * Math.PI}`
@@ -161,7 +161,7 @@ export default function DonutChart({ newRequests, accepted, rejected, color, isH
             r={normalizedRadius}
             cx={radius}
             cy={radius}
-            initial={{ strokeDasharray: `0 ${circumference}` }}
+            initial={{ strokeDasharray: newStrokeDasharray }}
             animate={{
               strokeDasharray: isHovered
                 ? `${(newPercentage / 100) * ((normalizedRadius + 2) * 2 * Math.PI)} ${(normalizedRadius + 2) * 2 * Math.PI}`
