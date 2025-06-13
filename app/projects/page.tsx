@@ -378,8 +378,8 @@ export default function ProjectsPage() {
                       cx={32}
                       cy={32}
                     />
-                    {/* Progress circle with proper calculation */}
-                    <motion.circle
+                    {/* Progress circle - всегда заполнен */}
+                    <circle
                       stroke="#3B82F6"
                       fill="transparent"
                       strokeWidth={6}
@@ -387,11 +387,7 @@ export default function ProjectsPage() {
                       r={26}
                       cx={32}
                       cy={32}
-                      initial={{ strokeDasharray: "0 163" }}
-                      animate={{
-                        strokeDasharray: `${((selectedProject?.newRequests || 0) / Math.max(selectedProject?.totalRequests || 1, 1)) * 163} 163`
-                      }}
-                      transition={{ duration: 1, delay: 0.2 }}
+                      strokeDasharray={`${((selectedProject?.newRequests || 0) / Math.max(selectedProject?.totalRequests || 1, 1)) * 163} 163`}
                     />
                   </svg>
                   {/* Center number */}

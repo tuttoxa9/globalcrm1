@@ -343,28 +343,7 @@ export default function ProjectPage() {
               </div>
             </div>
 
-            {/* Period buttons */}
-            <div className="flex items-center gap-2">
-              <div className="flex gap-1">
-                {[
-                  { id: "all", label: "Всё" },
-                  { id: "today", label: "Сегодня" },
-                  { id: "week", label: "Неделя" },
-                  { id: "month", label: "Месяц" },
-                ].map((item) => (
-                  <motion.button
-                    key={item.id}
-                    className="rounded-lg px-3 py-2 text-sm font-medium transition-all bg-[#3B82F6] text-white shadow-md"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    {item.label}
-                  </motion.button>
-                ))}
-              </div>
 
-
-            </div>
           </div>
         </div>
 
