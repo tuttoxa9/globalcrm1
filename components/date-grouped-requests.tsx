@@ -1,5 +1,4 @@
 "use client"
-import { motion, AnimatePresence } from "framer-motion"
 import { useState, useMemo } from "react"
 import {
   Calendar,
@@ -245,19 +244,14 @@ export default function DateGroupedRequests({
         const isExpanded = expandedDates.has(dateKey)
 
         return (
-          <motion.div
+          <div
             key={dateKey}
-            initial={{ opacity: 0, filter: "blur(10px)" }}
-            animate={{ opacity: 1, filter: "blur(0px)" }}
-            transition={{ duration: 0.4, delay: groupIndex * 0.1 }}
             className="space-y-3"
           >
             {/* Date Header - Clickable */}
-            <motion.button
+            <button
               onClick={() => toggleDateExpansion(dateKey)}
               className="w-full flex items-center justify-between p-4 rounded-lg bg-[#374151] hover:bg-[#4A5568] transition-colors border border-[#4A5568]"
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
             >
               <div className="flex items-center gap-3">
                 <Calendar className="h-4 w-4 text-[#6366F1]" />
@@ -281,29 +275,20 @@ export default function DateGroupedRequests({
                   <ChevronDown className="h-4 w-4 text-[#9CA3AF]" />
                 )}
               </div>
-            </motion.button>
+            </button>
 
             {/* Expandable Requests List */}
-            <AnimatePresence>
-              {isExpanded && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="overflow-hidden"
-                >
+            {isExpanded && (
+              <div className="overflow-hidden">
+
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
                     {dayRequests.map((request, index) => {
                       const deviceInfo = getDeviceInfo(request.userAgent || "")
                       const BrowserIcon = getBrowserIcon(request.userAgent || "")
 
                       return (
-                        <motion.div
+                        <div
                           key={request.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3, delay: index * 0.05 }}
                           className="bg-[#4A5568] rounded-xl p-4 shadow-lg hover:shadow-xl transition-shadow border border-[#6B7280]"
                         >
                           {/* Header */}
@@ -404,14 +389,13 @@ export default function DateGroupedRequests({
                               <PhoneOff className="h-4 w-4" />
                             </button>
                           </div>
-                        </motion.div>
+                        </div>
                       )
                     })}
                   </div>
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
-          </motion.div>
+            </div>
         )
       })}
     </div>

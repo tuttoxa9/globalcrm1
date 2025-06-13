@@ -1,6 +1,5 @@
 "use client"
 
-import { motion } from "framer-motion"
 import { Calendar, MessageCircle, Phone, Check, X, PhoneOff } from "lucide-react"
 
 interface Request {
@@ -45,14 +44,11 @@ export default function RequestCard({ request, columnColor, onStatusChange }: Re
   }
 
   return (
-    <motion.div className="group relative rounded-lg bg-[#4A5568] shadow-sm transition-all duration-200">
+    <div className="group relative rounded-lg bg-[#4A5568] shadow-sm transition-all duration-200">
       {/* Status Color Bar */}
-      <motion.div
+      <div
         className="absolute left-0 top-0 h-1 w-full rounded-t-lg"
         style={{ backgroundColor: columnColor }}
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
       />
 
       {/* Card Content */}
@@ -84,42 +80,35 @@ export default function RequestCard({ request, columnColor, onStatusChange }: Re
         )}
 
         {/* Action Buttons */}
-        <motion.div
-          className="flex items-center justify-between"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
+        <div className="flex items-center justify-between">
+
           <div className="flex gap-1">
-            <motion.button
+            <button
               onClick={handleAccept}
               className="flex h-6 w-6 items-center justify-center rounded-md bg-[#10B981] text-white transition-all hover:bg-[#059669]"
-              whileTap={{ scale: 0.95 }}
               title="Принять"
             >
               <Check className="h-3 w-3" />
-            </motion.button>
+            </button>
 
-            <motion.button
+            <button
               onClick={handleReject}
               className="flex h-6 w-6 items-center justify-center rounded-md bg-[#EF4444] text-white transition-all hover:bg-[#DC2626]"
-              whileTap={{ scale: 0.95 }}
               title="Отказать"
             >
               <X className="h-3 w-3" />
-            </motion.button>
+            </button>
           </div>
 
-          <motion.button
+          <button
             onClick={handleNoAnswer}
             className="flex h-6 w-6 items-center justify-center rounded-md bg-[#F59E0B] text-white transition-all hover:bg-[#D97706]"
-            whileTap={{ scale: 0.95 }}
             title="Не дозвонились"
           >
             <PhoneOff className="h-3 w-3" />
-          </motion.button>
-        </motion.div>
+          </button>
+        </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
