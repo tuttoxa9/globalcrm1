@@ -1,24 +1,28 @@
-# Global CRM Project - Todo List
+# CRM Development Todos
 
-## Completed Tasks
-- [completed] Fix duplicate variable declarations in components/date-grouped-requests.tsx
-  - Error: Identifier 'companies' and 'selectedRequestId' have already been declared
-  - Fixed: Removed duplicate state declarations (lines 44-47)
-- [completed] Fix dependency issues
-- [completed] Fix TypeScript errors (DatePickerWithRange import issue)
-- [completed] Test build process - SUCCESS!
+## Основные задачи
+- [x] Изучить существующую структуру проекта и настройки БД
+- [x] Добавить кнопку создания заявки вручную слева с полями ФИО, номер телефона, дата рождения (уже есть)
+- [x] Добавить кнопку создания компании сверху
+- [x] Создать таблицу компаний в БД (уже создана)
+- [x] Обновить структуру Request для связи с компаниями
+- [x] Добавить выбор компании при принятии заявки (уже реализовано)
+- [x] Создать страницу просмотра заявок по компаниям с поиском
+- [x] Обновить экспорт в Excel для работы с компаниями
+- [in_progress] Настроить Git токен и сделать push
+- [ ] Тестирование всего функционала
 
-## Error Fixing Phase
-- [ ] Fix linting errors (non-critical)
-- [ ] Fix runtime errors (if any)
+## Анализ структуры:
+✅ Firebase настроен и работает
+✅ Кнопка создания заявки уже есть (с полями ФИО, номер телефона, дата рождения)
+✅ Компании уже созданы в БД (companies-firestore.ts)
+✅ Интерфейс Company уже существует
+✅ Есть страница для компаний /companies
+✅ Есть страница для курьеров /couriers
 
-## Git Operations
-- [completed] Configure git with provided token
-- [in_progress] Commit fixes
-- [in_progress] Push changes to repository
-
-## Notes
-- Repository URL: https://github.com/tuttoxa9/globalcrm1
-- Project successfully builds and compiles
-- Main compilation errors have been resolved
-- Ready for deployment
+## Детальные подзадачи
+- [x] Проанализировать текущую схему БД
+- [x] Создать компонент формы добавления заявки (уже есть)
+- [in_progress] Добавить кнопку создания компании в header
+- [ ] Обновить схему данных для связи заявок с компаниями
+- [ ] Добавить фильтрацию и поиск по компаниям

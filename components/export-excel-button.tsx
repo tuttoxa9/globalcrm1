@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Download, FileSpreadsheet } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { UnicRequest } from "@/lib/unic-firestore"
+import { getCompanies, type Company } from "@/lib/companies-firestore"
 import * as XLSX from "xlsx"
 import { format } from "date-fns"
 import { ru } from "date-fns/locale"
@@ -17,6 +18,25 @@ interface ExportExcelButtonProps {
 
 export default function ExportExcelButton({ requests, className = "" }: ExportExcelButtonProps) {
   const [isExporting, setIsExporting] = useState(false)
+  const [companies, setCompanies] = useState<Company[]>([])
+
+  // Загружаем компании для отображения названий
+  useEffect(() => {
+    const loadCompanies = async () => {
+      try {
+        const companiesData = await getCompanies()
+        setCompanies(companiesData)
+      } catch (error) {
+        console.error("Error loading companies:", error)
+      }
+    }
+    loadCompanies()
+  }, [])
+
+  const getCompanyName = (companyId: string) => {
+    const company = companies.find(c => c.id === companyId)
+    return company?.name || "Не назначена"
+  }
 
   const getSourceDisplayName = (source: string) => {
     switch (source) {
@@ -65,6 +85,7 @@ export default function ExportExcelButton({ requests, className = "" }: ExportEx
         "Дата рождения": request.birthDate || "",
         "Источник заявки": getSourceDisplayName(request.source || ""),
         "Статус заявки": getStatusDisplayName(request.status),
+        "Компания": getCompanyName(request.companyId || ""),
         "Назначенный курьер": request.assignedTo || "Не назначен",
         "Приоритет": request.priority === "high" ? "Высокий" : request.priority === "low" ? "Низкий" : "Средний",
         "Теги": request.tags?.join(", ") || "",
@@ -90,6 +111,7 @@ export default function ExportExcelButton({ requests, className = "" }: ExportEx
         { wch: 15 },  // Дата рождения
         { wch: 18 },  // Источник заявки
         { wch: 15 },  // Статус заявки
+        { wch: 20 },  // Компания
         { wch: 20 },  // Назначенный курьер
         { wch: 12 },  // Приоритет
         { wch: 20 },  // Теги

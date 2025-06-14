@@ -100,6 +100,39 @@ export const getUnicRequestsByStatus = async (status: string): Promise<UnicReque
   }
 }
 
+// Получение заявок по компании
+export const getUnicRequestsByCompany = async (companyId: string): Promise<UnicRequest[]> => {
+  try {
+    const q = query(collection(db, "unic"), where("companyId", "==", companyId), orderBy("createdAt", "desc"))
+    const querySnapshot = await getDocs(q)
+    return querySnapshot.docs.map((doc) => {
+      const data = doc.data()
+      return {
+        id: doc.id,
+        fullName: data.fullName || data.clientName || "",
+        phone: data.phone || "",
+        birthDate: data.birthDate || "",
+        status: data.status || "new",
+        createdAt: data.createdAt?.toDate() || new Date(),
+        updatedAt: data.updatedAt?.toDate() || new Date(),
+        source: data.source || "",
+        referrer: data.referrer || "",
+        userAgent: data.userAgent || "",
+        priority: data.priority || "medium",
+        assignedTo: data.assignedTo || "",
+        tags: data.tags || [],
+        companyId: data.companyId || "",
+        title: data.title || data.fullName || "",
+        clientName: data.fullName || data.clientName || "",
+        comment: data.comment || "",
+      }
+    }) as UnicRequest[]
+  } catch (error) {
+    console.error("Error getting unic requests by company:", error)
+    return []
+  }
+}
+
 // Получение заявок за определенный период
 export const getUnicRequestsByDateRange = async (startDate: Date, endDate: Date): Promise<UnicRequest[]> => {
   try {

@@ -1,7 +1,7 @@
 "use client"
 
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowLeft, Building2, Plus, Edit, Trash2, Users } from "lucide-react"
+import { ArrowLeft, Building2, Plus, Edit, Trash2, Users, FileText } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -293,11 +293,22 @@ export default function CompaniesPage() {
                       📍 {company.address}
                     </p>
                   )}
-                  <div className="flex items-center gap-2 mt-3 pt-2 border-t border-[#374151]">
-                    <Users className="h-4 w-4 text-[#6B7280]" />
-                    <span className="text-sm text-[#9CA3AF] font-inter">
-                      {getCompanyCouriersCount(company.id)} курьеров
-                    </span>
+                  <div className="space-y-2 mt-3 pt-2 border-t border-[#374151]">
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4 text-[#6B7280]" />
+                      <span className="text-sm text-[#9CA3AF] font-inter">
+                        {getCompanyCouriersCount(company.id)} курьеров
+                      </span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => router.push(`/companies/${company.id}/requests`)}
+                      className="w-full bg-transparent border-[#4B5563] text-[#9CA3AF] hover:bg-[#374151] hover:text-[#E5E7EB] text-xs"
+                    >
+                      <FileText className="mr-2 h-3 w-3" />
+                      Посмотреть заявки
+                    </Button>
                   </div>
                 </div>
               </CardContent>

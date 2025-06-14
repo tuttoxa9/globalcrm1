@@ -6,6 +6,7 @@ import { useState, useEffect } from "react"
 import BackgroundBlob from "@/components/background-blob"
 import ProjectCard from "@/components/project-card"
 import CreateProjectModal from "@/components/create-project-modal"
+import CreateCompanyModal from "@/components/create-company-modal"
 import { useAuth } from "@/hooks/useAuth"
 import { signOut } from "@/lib/auth"
 import { getProjects, type Project } from "@/lib/firestore"
@@ -98,6 +99,7 @@ export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [projectsLoading, setProjectsLoading] = useState(true)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isCreateCompanyModalOpen, setIsCreateCompanyModalOpen] = useState(false)
   const [isPageLoading, setIsPageLoading] = useState(true)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
@@ -271,6 +273,13 @@ export default function ProjectsPage() {
                       <span className="font-inter text-sm">Новый проект</span>
                     </button>
                     <button
+                      onClick={() => setIsCreateCompanyModalOpen(true)}
+                      className="flex items-center gap-2 text-[#6B7280] transition-colors hover:text-[#2D3748]"
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span className="font-inter text-sm">Создать компанию</span>
+                    </button>
+                    <button
                       onClick={() => router.push("/companies")}
                       className="flex items-center gap-2 text-[#6B7280] transition-colors hover:text-[#2D3748]"
                     >
@@ -428,6 +437,16 @@ export default function ProjectsPage() {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onProjectCreated={handleProjectCreated}
+      />
+
+      {/* Create Company Modal */}
+      <CreateCompanyModal
+        isOpen={isCreateCompanyModalOpen}
+        onClose={() => setIsCreateCompanyModalOpen(false)}
+        onCompanyCreated={() => {
+          // Можно добавить обновление списка компаний если нужно
+          console.log("Company created successfully")
+        }}
       />
     </div>
   )
